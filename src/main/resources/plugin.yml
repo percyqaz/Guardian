@@ -1,0 +1,5 @@
+name: Guardian
+version: 1.0
+author: Percyqaz
+main: me.Percyqaz.Guardian.Guardian
+api-version: '1.20'
