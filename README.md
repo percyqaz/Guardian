@@ -2,6 +2,10 @@
 
 Minecraft/Spigot plugin to toggle various individual protections, much more fine-grained than /gamerule mobGriefing
 
+You can do the same thing using [WorldGuard](https://dev.bukkit.org/projects/worldguard) but this is a simpler plugin for my small simple server :) (Also it was an excuse to try Maven)
+
+----
+
 Here is the full list of config options and what setting them to `false` does:
 
 - `allowCreeperBlockDamage` - When false, Creeper explosions do not destroy blocks. Explosion still deals damage
@@ -24,9 +28,15 @@ Here is the full list of config options and what setting them to `false` does:
 - `allowZombieBreakDoors` - When false, Zombies (or Zombified Piglins) cannot break doors 
 - `allowFarmlandTrampling` - When false, no entities can trample farmland, including players
 
-### ⚠️ ALL of these settings are true by default, which means by default when you install this plugin nothing about your game has changed.
+### ⚠️ ALL of these settings are true by default, which means by default when you install this plugin, nothing about your game changes.
 To change these settings, edit `config.yml` in the Guardian folder found in your Plugins folder
 
 It will only exist after the server has been started once.
 
 To apply changes to these settings, save the file and then restart your server.
+
+----
+
+This plugin was written for my private server, but I have made my code available for anyone that may find it useful.
+
+If you stumble upon this repository and have any requests, feel free to [open an issue](https://github.com/percyqaz/Guardian/issues)
