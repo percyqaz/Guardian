@@ -31,6 +31,9 @@ public class Guardian extends JavaPlugin
         config.addDefault("allowZombieBreakDoors", true);
         config.addDefault("allowFarmlandTrampling", true);
 
+        config.addDefault("allowBedExplosionBlockDamage", true);
+        config.addDefault("allowRespawnAnchorExplosionBlockDamage", true);
+
         config.options().copyDefaults(true);
         saveConfig();
 

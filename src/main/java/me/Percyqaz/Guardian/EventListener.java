@@ -1,5 +1,6 @@
 package me.Percyqaz.Guardian;
 
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -8,10 +9,8 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
-import org.bukkit.event.entity.EntityBreakDoorEvent;
-import org.bukkit.event.entity.EntityChangeBlockEvent;
-import org.bukkit.event.entity.EntityExplodeEvent;
-import org.bukkit.event.entity.EntityInteractEvent;
+import org.bukkit.event.block.BlockExplodeEvent;
+import org.bukkit.event.entity.*;
 import org.bukkit.event.player.PlayerInteractEvent;
 
 public class EventListener implements Listener
@@ -41,6 +40,12 @@ public class EventListener implements Listener
     boolean allowZombieBreakDoors;
     boolean allowFarmlandTrampling;
 
+    boolean allowBedExplosionBlockDamage;
+    boolean allowRespawnAnchorExplosionBlockDamage;
+
+    Location lastInteractedBed;
+    Location lastInteractedRespawnAnchor;
+
     public EventListener(Guardian plugin, FileConfiguration config)
     {
         this.config = config;
@@ -67,6 +72,9 @@ public class EventListener implements Listener
 
         allowZombieBreakDoors = config.getBoolean("allowZombieBreakDoors", true);
         allowFarmlandTrampling = config.getBoolean("allowFarmlandTrampling", true);
+
+        allowBedExplosionBlockDamage = config.getBoolean("allowBedExplosionBlockDamage", true);
+        allowRespawnAnchorExplosionBlockDamage = config.getBoolean("allowRespawnAnchorExplosionBlockDamage", true);
     }
 
     @EventHandler(priority = EventPriority.NORMAL)
@@ -130,13 +138,82 @@ public class EventListener implements Listener
     }
 
     @EventHandler(priority = EventPriority.NORMAL)
-    public void PlayerTrampleFarmland(PlayerInteractEvent e)
+    public void PlayerInteract(PlayerInteractEvent e)
     {
         Block block = e.getClickedBlock();
-        if (e.getAction() == Action.PHYSICAL && !allowFarmlandTrampling && block.getType() == Material.FARMLAND)
+        Action action = e.getAction();
+        if (action == Action.PHYSICAL && !allowFarmlandTrampling && block.getType() == Material.FARMLAND)
         {
             e.setCancelled(true);
         }
+        else if (action == Action.RIGHT_CLICK_BLOCK)
+        {
+            switch (block.getType())
+            {
+                case WHITE_BED:
+                case ORANGE_BED:
+                case MAGENTA_BED:
+                case LIGHT_BLUE_BED:
+                case YELLOW_BED:
+                case LIME_BED:
+                case PINK_BED:
+                case GRAY_BED:
+                case LIGHT_GRAY_BED:
+                case CYAN_BED:
+                case PURPLE_BED:
+                case BLUE_BED:
+                case BROWN_BED:
+                case GREEN_BED:
+                case RED_BED:
+                case BLACK_BED:
+                    if (!allowBedExplosionBlockDamage)
+                    {
+                        lastInteractedBed = block.getLocation();
+                    }
+                    break;
+                case RESPAWN_ANCHOR:
+                    if (!allowRespawnAnchorExplosionBlockDamage)
+                    {
+                       lastInteractedRespawnAnchor = block.getLocation();
+                    }
+                    break;
+                default:
+                    break;
+            }
+        }
     }
 
+    boolean IsLocationPartOfBed(Location location)
+    {
+        if (location == null || lastInteractedBed == null)
+        {
+            return false;
+        }
+
+        int distance = Math.abs(location.getBlockX() - lastInteractedBed.getBlockX()) + Math.abs(location.getBlockZ() - lastInteractedBed.getBlockZ());
+        return distance <= 1 && (location.getBlockY() == lastInteractedBed.getBlockY()) && (location.getWorld().equals(location.getWorld()));
+    }
+
+    @EventHandler(priority = EventPriority.NORMAL)
+    public void BlockExplode(BlockExplodeEvent e)
+    {
+        // when right clicking on a bed or respawn anchor, it will break the block(s) and then trigger the explosion event
+        // therefore e.getBlock().getMaterial() will return AIR at the time of writing this plugin
+        // we store the location when interacting with a bed/respawn anchor and see if it's the same place
+
+        // please also laugh at timtower's awful handling of a thread discussing this issue on bukkit forums https://bukkit.org/threads/blockexplodeevent.475806/
+        // truly a discredit to the community
+
+        Location explodingBlockLocation = e.getBlock().getLocation();
+        if (!allowBedExplosionBlockDamage && IsLocationPartOfBed(explodingBlockLocation))
+        {
+            e.blockList().clear();
+            lastInteractedBed = null;
+        }
+        if (!allowRespawnAnchorExplosionBlockDamage && explodingBlockLocation.equals(lastInteractedRespawnAnchor))
+        {
+            e.blockList().clear();
+            lastInteractedRespawnAnchor = null;
+        }
+    }
 }

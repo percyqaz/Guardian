@@ -1,8 +1,10 @@
 # Guardian
 
-Minecraft/Spigot plugin to toggle various individual protections, much more fine-grained than /gamerule mobGriefing
+Minecraft server plugin (supports PaperMC and SpigotMC) to toggle various individual protections, much more fine-grained than `/gamerule mobGriefing`
 
-You can do the same thing using [WorldGuard](https://dev.bukkit.org/projects/worldguard) but this is a simpler plugin for my small simple server :) (Also it was an excuse to try Maven)
+It also applies the same rules across all dimensions where `/gamerule mobGriefing` needs to be updated per-world on spigot servers
+
+You can achieve the same result + dimension-specific rules using [WorldGuard](https://dev.bukkit.org/projects/worldguard) but this is a simpler plugin for my small simple server :) (Also it was an excuse to try Maven)
 
 ----
 
@@ -27,6 +29,8 @@ Here is the full list of config options and what setting them to `false` does:
 - `allowRabbitBlockEdits` - When false, Rabbits cannot eat carrot crops
 - `allowZombieBreakDoors` - When false, Zombies (or Zombified Piglins) cannot break doors 
 - `allowFarmlandTrampling` - When false, no entities can trample farmland, including players
+- `allowBedExplosionBlockDamage` - When false, exploding beds do not destroy blocks. Explosion still deals damage
+- `allowRespawnAnchorExplosionBlockDamage` - When false, exploding respawn anchors do not destroy blocks. Explosion still deals damage
 
 ### ⚠️ ALL of these settings are true by default, which means by default when you install this plugin, nothing about your game changes.
 To change these settings, edit `config.yml` in the Guardian folder found in your Plugins folder
