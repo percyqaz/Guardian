@@ -1,6 +1,6 @@
 # Guardian
 
-Minecraft/Spigot plugin to toggle various individual protections, much more fine-grained than /gamerule mobGriefing
+Minecraft server plugin (Spigot and Paper) to toggle various individual protections, much more fine-grained than /gamerule mobGriefing
 
 You can do the same thing using [WorldGuard](https://dev.bukkit.org/projects/worldguard) but this is a simpler plugin for my small simple server :) (Also it was an excuse to try Maven)
 
